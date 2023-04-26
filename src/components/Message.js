@@ -1,10 +1,10 @@
 import React from 'react';
 import {Alert} from "react-bootstrap";
 
-function Message(variant, children) {
+const Message = (variant, message) => {
     return (
         <Alert variant={variant}>
-            {children}
+            {message}
         </Alert>
     );
 }

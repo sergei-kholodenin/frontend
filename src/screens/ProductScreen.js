@@ -94,7 +94,7 @@ function ProductScreen() {
                                 </ListGroup.Item>
                             )}
                             <ListGroup.Item>
-                                <Row>
+                                <Row className='p-3'>
                                     <Button 
                                     onClick={addToCartHandler}
                                     className='btn-block' 
