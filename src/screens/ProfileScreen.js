@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {Form, Button, Row, Col, Alert} from 'react-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../components/Loader';
@@ -13,7 +13,6 @@ function ProfileScreen() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
-    const search = useLocation().search;
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
@@ -44,7 +43,7 @@ function ProfileScreen() {
 
     const submitHandler = (e)  => {
         e.preventDefault();
-        if(password != confirmPassword) {
+        if(password !== confirmPassword) {
             setMessage('Password do not match!');
         } else {
             dispatch(updateUserProfile({
