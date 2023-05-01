@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Col, Row, ListGroup, Image, Card, Alert } from 'react-bootstrap';
+import { Button, Col, Row, ListGroup, Image, Card, Alert } from 'react-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../actions/orderActions';
+import { getOrderDetails, payOrder } from '../actions/orderActions';
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 function OrderScreen() {
     const {id} = useParams();    
@@ -12,15 +13,24 @@ function OrderScreen() {
     const orderDetails = useSelector(state => state.orderDetails);
     const {order, error, loading} = orderDetails;
 
+    const orderPay = useSelector(state => state.orderPay);
+    let {success:successPay} = orderPay;
+
     if (!loading && !error) {
         order.itemPrice = order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2);
     }    
 
     useEffect(() => {
-        if (!order || order._id !== +id) {
-            dispatch(getOrderDetails(id))
+        if (!order || successPay || order._id !== +id) {            
+            dispatch({type: ORDER_PAY_RESET});
+            dispatch(getOrderDetails(id));
         }       
-    }, [order, id]);
+    }, [dispatch, successPay, order, id]);
+
+    const payOrderHandler = (e) => {
+        successPay = true;
+        dispatch(payOrder(id, successPay));
+    }
 
 
     return loading ? (<Loader/>) : error ? (<Alert variant='danger'>{error}</Alert>) : (
@@ -61,7 +71,7 @@ function OrderScreen() {
 
                         <ListGroup.Item>
                             <h2>Order Items</h2>
-                            {order.orderItems.length == 0 ? <Alert variant='info'>
+                            {order.orderItems.length === 0 ? <Alert variant='info'>
                                 Order is empty
                             </Alert> : (
                                 <ListGroup variant='flush'>
@@ -121,6 +131,21 @@ function OrderScreen() {
                                     <Col>${order.totalPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
+                            
+                            {!order.isPaid && (
+                                <ListGroup.Item>
+                                    {loading && <Loader/>}
+                                    <Row style={{padding: '1rem'}}>
+                                        <Button
+                                            type='button'
+                                            className='btn-block'
+                                            onClick={payOrderHandler}
+                                        >
+                                            Pay Order
+                                        </Button>
+                                    </Row>
+                            </ListGroup.Item>
+                            )}                            
 
                         </ListGroup>
                     </Card>
