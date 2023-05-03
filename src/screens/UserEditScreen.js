@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {Form, Button, Alert} from 'react-bootstrap';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../components/Loader';
@@ -13,7 +13,6 @@ function UserEditScreen() {
     const [email, setEmail] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
 
-    const search = useLocation().search;
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
